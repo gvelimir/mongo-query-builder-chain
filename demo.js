@@ -5,23 +5,23 @@ console.log(mongoQB.body);
 
 mongoQB = new mongoQBModule.MongoQuery({
   query: {
-    retailerId: {$ne: "-1"},
-    retailerPool: {$exists: true},
-    trash: 0
+    field1: {$ne: "-1"},
+    field2: {$exists: true},
+    field3: 0
   },
   sort: {
-    "retailerPool.quality.pos": 1,
-    "retailerPool.name": 1,
-    promoCode: -1
+    "field1.field11.field111": 1,
+    "field2.field21": 1,
+    field4: -1
   }
 });
 
-console.log(mongoQB.addToQuery(['retailerId'], mongoQB.$ne("-1"))
-  .addToQuery(['retailerPool'], mongoQB.$exists())
-  .addToQuery(['trash'], 0)
-  .sort("affiliateModel", 1)
-  .sort("retailerPool.quality.pos", 1)
-  .sort("retailerPool.name", 1)
-  .sort("promoCode", -1)
+console.log(mongoQB.addToQuery(['field1'], mongoQB.$ne("-1"))
+  .addToQuery(['field2'], mongoQB.$exists())
+  .addToQuery(['field3'], 0)
+  .sort("field0", 1)
+  .sort("field1.field11.field111", 1)
+  .sort("field2.field21", 1)
+  .sort("field4", -1)
   .getValue()
 );
