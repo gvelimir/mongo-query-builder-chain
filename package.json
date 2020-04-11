@@ -1,0 +1,17 @@
+{
+  "author": "Velimir Graorkoski",
+  "description": "library for generating mongodb queries",
+  "keywords": [
+    "mongodb",
+    "query",
+    "builder"
+  ],
+  "license": "ISC",
+  "main": "module.js",
+  "name": "mongo-query-builder-chain",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "type": "module",
+  "version": "1.0.1"
+}
