@@ -177,6 +177,8 @@ class MongoQuery {
     return this;
   }
 
+  // Comparison query operators
+
   $eq(value) {
     if (helpers.isOfPrimitiveType(['number', 'string'], value)) {
       return {
@@ -187,26 +189,26 @@ class MongoQuery {
     }
   }
 
-  $exists(value = true) {
+  $gt(value) {
     return {
-      $exists: value
+      $gt: value
     };
-  }
-
-  $date(value) {
-    if (helpers.isOfPrimitiveType(['string'], value)) {
-      return {
-        $date: value
-      };
-    } else {
-      throw "Argument value must be string!";
-    }
   }
 
   $gte(value) {
     return {
       $gte: value
     };
+  }
+
+  $in(value) {
+    if (Array.isArray(value)) {
+      return {
+        $in: value
+      };
+    } else {
+      throw "Argument value must be an array!";
+    }
   }
 
   $ne(value) {
@@ -219,15 +221,41 @@ class MongoQuery {
     }
   }
 
-  $in(value) {
+  $nin(value) {
     if (Array.isArray(value)) {
       return {
-        $in: value
+        $nin: value
       };
     } else {
       throw "Argument value must be an array!";
     }
   }
+
+  $lt(value) {
+    return {
+      $lt: value
+    };
+  }
+
+  $lte(value) {
+    return {
+      $lte: value
+    };
+  }
+
+  // Element query operators
+
+  $exists(value = true) {
+    if (helpers.isOfPrimitiveType(['boolean'], value)) {
+      return {
+        $exists: value
+      };
+    } else {
+      throw "Argument value must be boolean!";
+    }
+  }
+
+  // Evaluation query operators
 
   $search(value) {
     if (helpers.isOfPrimitiveType(['string'], value)) {
@@ -250,6 +278,17 @@ class MongoQuery {
     }
 
     return this;
+  }
+
+  // Date query operators
+  $date(value) {
+    if (helpers.isOfPrimitiveType(['string'], value)) {
+      return {
+        $date: value
+      };
+    } else {
+      throw "Argument value must be string!";
+    }
   }
 }
 
