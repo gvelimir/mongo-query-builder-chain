@@ -23,5 +23,6 @@ console.log(mongoQB.addToQuery(['field1'], mongoQB.$ne("-1"))
   .sort("field1.field11.field111", 1)
   .sort("field2.field21", 1)
   .sort("field4", -1)
+  .$searchRemove()
   .getValue()
 );

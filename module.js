@@ -271,10 +271,12 @@ class MongoQuery {
   }
 
   $searchRemove() {
-    delete this.body.query.$text.$search;
+    if (this.body.query.$text) {
+      delete this.body.query.$text.$search;
 
-    if (!Object.keys(this.body.query.$text).length) {
-      delete this.body.query.$text;
+      if (!Object.keys(this.body.query.$text).length) {
+        delete this.body.query.$text;
+      }
     }
 
     return this;
