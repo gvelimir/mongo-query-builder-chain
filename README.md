@@ -78,13 +78,13 @@ It returns the object containing only the **$exists** operator as key and its va
 
 Partial support for the current mongodb query [evaluation operators](https://docs.mongodb.com/manual/reference/operator/query-evaluation/).
 
-Adds a text search by a specified _value_
+Add a text search by a specified _value_
 ```javascript
 mongoQB.$search(value)
 ```
 It returns the object containing only the **$text** operator and its value - the **$search** operator as key and its value provided by the argument. If the **$text** key does not exist in the query, it is added automatically.
 
-Removes the current text search
+Remove the current text search
 ```javascript
 mongoQB.$searchRemove()
 ```
@@ -96,7 +96,7 @@ mongoQB.$language(value)
 ```
 It returns the object containing only the **$text** operator and its value with the **$language** operator as key and its value provided by the argument. If the **$text** key does not exist in the query, it is added automatically.
 
-Removes the current text language
+Remove the current text language
 ```javascript
 mongoQB.$languageRemove()
 ```
@@ -128,6 +128,8 @@ It returns the current state of the mongoQuery object.
 
 ## Projecting
 
+Partial support for the current mongodb query [projection](https://docs.mongodb.com/manual/reference/glossary/#term-projection).
+
 Add a projection criteria with keys _field1_, _field2_, _field3_ intended to be excluded
 ```javascript
 mongoQuery.projectionAdd(['field1', 'field2', 'field3'], 0);
@@ -140,7 +142,7 @@ mongoQuery.projectionAdd(['field4', 'field5']);
 ```
 The default inclusion value is 1 and therefore the second argument is not necessary.
 
-Removes a projection criteria with key _field4_
+Remove a projection criteria with key _field4_
 ```javascript
 mongoQuery.projectionRemove('field4');
 ```
