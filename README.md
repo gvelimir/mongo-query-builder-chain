@@ -90,6 +90,18 @@ mongoQB.$searchRemove()
 ```
 If the **$search** key is the last remaining in the **$text** operator, the **$text** key will be removed automatically. It returns the current state of the _mongoQuery_ object.
 
+Adds a text language by a specified _value_ (the default _value_ is "none")
+```javascript
+mongoQB.$language(value)
+```
+It returns the object containing only the **$text** operator and its value with the **$language** operator as key and its value provided by the argument. If the **$text** key does not exist in the query, it is added automatically.
+
+Removes the current text language
+```javascript
+mongoQB.$languageRemove()
+```
+If the **$language** key is the last remaining in the **$text** operator, the **$text** key will be removed automatically. It returns the current state of the _mongoQuery_ object.
+
 #### Date operators
 
 Partial support fo the current mongodb query date operators.
@@ -111,6 +123,26 @@ Any previous sorting is maintained and the sort key is added at the end of the s
 Clear existing sort criteria
 ```javascript
 mongoQuery.sortClear();
+```
+It returns the current state of the mongoQuery object.
+
+## Projecting
+
+Add a projection criteria with keys _field1_, _field2_, _field3_ intended to be excluded
+```javascript
+mongoQuery.projectionAdd(['field1', 'field2', 'field3'], 0);
+```
+The second argument, denoting the inclusion of the fields, accepts only 0 and 1 as values. It returns the current state of the mongoQuery object.
+
+Add a projection criteria with keys _field4_, _field5_ intended to be included
+```javascript
+mongoQuery.projectionAdd(['field4', 'field5']);
+```
+The default inclusion value is 1 and therefore the second argument is not necessary.
+
+Removes a projection criteria with key _field4_
+```javascript
+mongoQuery.projectionRemove('field4');
 ```
 It returns the current state of the mongoQuery object.
 

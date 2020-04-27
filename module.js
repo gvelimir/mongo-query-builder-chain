@@ -257,6 +257,31 @@ class MongoQuery {
 
   // Evaluation query operators
 
+  $language(value = 'none') {
+    if (helpers.isOfPrimitiveType(['string'], value)) {
+      if (!this.body.query.$text) {
+        this.body.query['$text'] = {};
+      }
+
+      this.body.query.$text['$language'] = value;
+      return this.body.query.$text;
+    } else {
+      throw "Argument value must be string!";
+    }
+  }
+
+  $languageRemove() {
+    if (this.body.query.$text) {
+      delete this.body.query.$text.$language;
+
+      if (!Object.keys(this.body.query.$text).length) {
+        delete this.body.query.$text;
+      }
+    }
+
+    return this;
+  }
+
   $search(value) {
     if (helpers.isOfPrimitiveType(['string'], value)) {
       if (!this.body.query.$text) {
@@ -290,6 +315,46 @@ class MongoQuery {
       };
     } else {
       throw "Argument value must be string!";
+    }
+  }
+
+  // Projection
+
+  projectionAdd(keys, include = 1) {
+    if (include === 0 || include === 1) {
+      if (Array.isArray(keys)) {
+        keys.forEach(key => {
+          if (helpers.isOfPrimitiveType(['string'], key)) {
+            if (!this.body.$projection) {
+              this.body['$projection'] = {};
+            }
+
+            this.body.$projection[key] = include;
+          } else {
+            throw "Argument keys contains a non string element!";
+          }
+        });
+        return this;
+      } else {
+        throw "Argument keyPath must be an array!";
+      }
+    } else {
+      throw "Argument include must be 0 or 1!";
+    }
+  }
+
+  projectionRemove(key) {
+    let projectionKeys = Object.keys(this.body.$projection);
+    if (projectionKeys.includes(key)) {
+      delete this.body.$projection[key];
+
+      if (!projectionKeys.length) {
+        delete this.body.$projection;
+      }
+
+      return this;
+    } else {
+      throw "The key does not exist!";
     }
   }
 }
