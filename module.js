@@ -394,7 +394,11 @@ class MongoQuery {
       let clausePrimaryKeys = Object.keys(clause);
       let orClauseMatched = parent.$or.find(orClause => JSON.stringify(Object.keys(orClause)) === JSON.stringify(clausePrimaryKeys));
       if (orClauseMatched) {
-        orClauseMatched[[clausePrimaryKeys[0]]] = Object.assign(orClauseMatched[clausePrimaryKeys[0]], clause[clausePrimaryKeys[0]]);
+        if (helpers.isOfPrimitiveType(['object'], clause[clausePrimaryKeys[0]])) {
+          orClauseMatched[[clausePrimaryKeys[0]]] = Object.assign(orClauseMatched[clausePrimaryKeys[0]], clause[clausePrimaryKeys[0]]);
+        } else {
+          orClauseMatched = clause;
+        }
         parent.$or = parent.$or.filter(orClause => JSON.stringify(Object.keys(orClause)) !== JSON.stringify(clausePrimaryKeys));
         parent.$or.push(orClauseMatched);
       } else {
