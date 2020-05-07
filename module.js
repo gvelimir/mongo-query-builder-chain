@@ -109,7 +109,7 @@ class MongoQuery {
     }
   }
 
-  addToQuery(keyPath = [], value) {
+  addToQuery(keyPath = [], value, merge = false) {
     if (Array.isArray(keyPath)) {
       let parent = this.body.query;
       keyPath.forEach((key, index) => {
@@ -121,12 +121,20 @@ class MongoQuery {
           if (index < keyPath.length - 1) {
             parent = parent[key];
           } else {
-            parent[key] = value;
+            if (!merge) {
+              parent[key] = value;
+            }
           }
         } else {
           throw "Argument keyPath contains a non string element!";
         }
       });
+      if (merge) {
+        if (!helpers.isOfPrimitiveType(['object'], value)) {
+          throw "Argument value must be object!";
+        }
+        parent = Object.assign(parent, value);
+      }
       return this;
     } else {
       throw "Argument keyPath must be an array!";
@@ -273,50 +281,72 @@ class MongoQuery {
   // Evaluation query operators
 
   $language(value = 'none') {
-    if (helpers.isOfPrimitiveType(['string'], value)) {
-      if (!this.body.query.$text) {
-        this.body.query.$text = {};
-      }
-
-      this.body.query.$text.$language = value;
-      return this.body.query.$text;
-    } else {
+    if (!helpers.isOfPrimitiveType(['string'], value)) {
       throw "Argument value must be string!";
     }
+
+    let textObject = {
+      $text: {}
+    };
+    textObject.$text.$language = value;
+    return textObject;
   }
 
-  $languageRemove() {
-    if (this.body.query.$text) {
-      delete this.body.query.$text.$language;
-
-      if (!Object.keys(this.body.query.$text).length) {
-        delete this.body.query.$text;
+  $languageRemove(textClauseLocation = []) {
+    if (!Array.isArray(textClauseLocation)) {
+      throw "Argument keyPath must be an array!";
+    }
+    let parent = this.body.query;
+    textClauseLocation.forEach(key => {
+      if (helpers.isOfPrimitiveType(['string'], key)) {
+        if (parent[key] === null) {
+          return;
+        }
+        parent = parent[key];
+      } else {
+        throw "Argument keyPath contains a non string element!";
       }
+    });
+
+    let textClause = parent.$text;
+    if (textClause) {
+      delete textClause.$language;
     }
 
     return this;
   }
 
   $search(value) {
-    if (helpers.isOfPrimitiveType(['string'], value)) {
-      if (!this.body.query.$text) {
-        this.body.query.$text = {};
-      }
-
-      this.body.query.$text.$search = value;
-      return this.body.query.$text;
-    } else {
+    if (!helpers.isOfPrimitiveType(['string'], value)) {
       throw "Argument value must be string!";
     }
+
+    let textObject = {
+      $text: {}
+    };
+    textObject.$text.$search = value;
+    return textObject;
   }
 
-  $searchRemove() {
-    if (this.body.query.$text) {
-      delete this.body.query.$text.$search;
-
-      if (!Object.keys(this.body.query.$text).length) {
-        delete this.body.query.$text;
+  $searchRemove(textClauseLocation = []) {
+    if (!Array.isArray(textClauseLocation)) {
+      throw "Argument keyPath must be an array!";
+    }
+    let parent = this.body.query;
+    textClauseLocation.forEach(key => {
+      if (helpers.isOfPrimitiveType(['string'], key)) {
+        if (parent[key] === null) {
+          return;
+        }
+        parent = parent[key];
+      } else {
+        throw "Argument keyPath contains a non string element!";
       }
+    });
+
+    let textClause = parent.$text;
+    if (textClause) {
+      delete textClause.$search;
     }
 
     return this;
@@ -359,7 +389,18 @@ class MongoQuery {
     if (!parent.$or) {
       parent.$or = [];
     }
-    parent.$or = parent.$or.concat(...clauses);
+
+    clauses.forEach(clause => {
+      let clausePrimaryKeys = Object.keys(clause);
+      let orClauseMatched = parent.$or.find(orClause => JSON.stringify(Object.keys(orClause)) === JSON.stringify(clausePrimaryKeys));
+      if (orClauseMatched) {
+        orClauseMatched[[clausePrimaryKeys[0]]] = Object.assign(orClauseMatched[clausePrimaryKeys[0]], clause[clausePrimaryKeys[0]]);
+        parent.$or = parent.$or.filter(orClause => JSON.stringify(Object.keys(orClause)) !== JSON.stringify(clausePrimaryKeys));
+        parent.$or.push(orClauseMatched);
+      } else {
+        parent.$or.push(clause);
+      }
+    });
     return this;
   }
 

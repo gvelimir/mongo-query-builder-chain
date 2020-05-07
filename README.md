@@ -30,9 +30,9 @@ var mongoQuery = new mongoQBChain.MongoQuery({
 
 ## Query methods
 
-Add a key _field11_ under _field1_ with a value to an existing query
+Add a key _field11_ under _field1_ with a value to an existing query and ability to _merge_ if a value with the same key already exists (in case _value_ is of object type)
 ```javascript
-mongoQuery.addToQuery(['field1', 'field11'], value);
+mongoQuery.addToQuery(['field1', 'field11'], value, merge);
 ```
 If the key already exists, only its value will be changed. The value can be primitive, object with containing the reserved supported operators. The location of the key inside the query is determined by the provided array with the value at the beginning denoting the root location and the value at the end denoting the exact name of the key. If any portion of the path does not exist in the current body of the query, it is automatically created. It returns the current state of the _mongoQuery_ object.
 
@@ -98,23 +98,23 @@ Add a text search by a specified _value_
 ```javascript
 mongoQuery.$search(value)
 ```
-It returns the object containing only the **$text** operator and its value - the **$search** operator as key and its value provided by the argument. If the **$text** key does not exist in the query, it is added automatically.
+It returns the object containing the **$text** operator and its value - the **$search** operator as key and its value provided by the argument.
 
-Remove the current text search
+Remove the current text search on the _keyPath_ location
 ```javascript
-mongoQuery.$searchRemove()
+mongoQuery.$searchRemove(keyPath)
 ```
 If the **$search** key is the last remaining in the **$text** operator, the **$text** key will be removed automatically. It returns the current state of the _mongoQuery_ object.
 
-Adds a text language by a specified _value_ (the default _value_ is "none")
+Add a text language by a specified _value_ (the default _value_ is "none")
 ```javascript
 mongoQuery.$language(value)
 ```
 It returns the object containing only the **$text** operator and its value with the **$language** operator as key and its value provided by the argument. If the **$text** key does not exist in the query, it is added automatically.
 
-Remove the current text language
+Remove the current text language on the _keyPath_ location
 ```javascript
-mongoQuery.$languageRemove()
+mongoQuery.$languageRemove(keyPath)
 ```
 If the **$language** key is the last remaining in the **$text** operator, the **$text** key will be removed automatically. It returns the current state of the _mongoQuery_ object.
 
