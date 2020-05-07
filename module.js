@@ -133,6 +133,21 @@ class MongoQuery {
     }
   }
 
+  clause(key, value) {
+    if (!helpers.isOfPrimitiveType(['string'], key)) {
+      throw "Argument key must be string!";
+    }
+
+    if (!helpers.isOfPrimitiveType(['number', 'string'], value)) {
+      throw "Argument value must be string or number!";
+    }
+
+    let clause = {};
+    clause[key] = value;
+
+    return clause;
+  }
+
   removeFromQuery(keyPath = []) {
     if (Array.isArray(keyPath)) {
       let parent = this.body.query;
@@ -260,10 +275,10 @@ class MongoQuery {
   $language(value = 'none') {
     if (helpers.isOfPrimitiveType(['string'], value)) {
       if (!this.body.query.$text) {
-        this.body.query['$text'] = {};
+        this.body.query.$text = {};
       }
 
-      this.body.query.$text['$language'] = value;
+      this.body.query.$text.$language = value;
       return this.body.query.$text;
     } else {
       throw "Argument value must be string!";
@@ -285,10 +300,10 @@ class MongoQuery {
   $search(value) {
     if (helpers.isOfPrimitiveType(['string'], value)) {
       if (!this.body.query.$text) {
-        this.body.query['$text'] = {};
+        this.body.query.$text = {};
       }
 
-      this.body.query.$text['$search'] = value;
+      this.body.query.$text.$search = value;
       return this.body.query.$text;
     } else {
       throw "Argument value must be string!";
@@ -318,15 +333,97 @@ class MongoQuery {
     }
   }
 
+  // Logical query operators
+
+  $or(keyPath = [], clauses = []) {
+    if (!Array.isArray(keyPath) || !Array.isArray(clauses)) {
+      throw "Each of the arguments must be an array!";
+    }
+
+    let parent = this.body.query;
+    keyPath.forEach((key, index) => {
+      if (helpers.isOfPrimitiveType(['string'], key)) {
+        if (!parent[key]) {
+          parent[key] = {};
+        }
+
+        if (index < keyPath.length - 1) {
+          parent = parent[key];
+        } else {
+          parent[key] = value;
+        }
+      } else {
+        throw "Argument keyPath contains a non string element!";
+      }
+    });
+    if (!parent.$or) {
+      parent.$or = [];
+    }
+    parent.$or = parent.$or.concat(...clauses);
+    return this;
+  }
+
+  $orClear(keyPath = []) {
+    if (!Array.isArray(keyPath)) {
+      throw "Argument keyPath must be an array!";
+    }
+    let parent = this.body.query;
+    keyPath.forEach(key => {
+      if (helpers.isOfPrimitiveType(['string'], key)) {
+        if (parent[key] === null) {
+          return;
+        }
+        parent = parent[key];
+      } else {
+        throw "Argument keyPath contains a non string element!";
+      }
+    });
+
+    delete parent.$or;
+
+    return this;
+  }
+
+  $orRemoveFrom(keyPath = [], clauseKey) {
+    if (!Array.isArray(keyPath)) {
+      throw "Argument keyPath must be an array!";
+    }
+
+    if (!helpers.isOfPrimitiveType(['string'], clauseKey)) {
+      throw "Argument clauseKey must be string!";
+    }
+
+    let parent = this.body.query;
+    keyPath.forEach(key => {
+      if (helpers.isOfPrimitiveType(['string'], key)) {
+        if (parent[key] === null) {
+          return;
+        }
+        parent = parent[key];
+      } else {
+        throw "Argument keyPath contains a non string element!";
+      }
+    });
+
+    if (parent.$or) {
+      parent.$or = parent.$or.filter(orClause => !Object.keys(orClause).includes(clauseKey));
+    }
+
+    if (!parent.$or.length) {
+      delete parent.$or;
+    }
+    return this;
+  }
+
   // Projection
 
-  projectionAdd(keys, include = 1) {
+  projectionAdd(keys = [], include = 1) {
     if (include === 0 || include === 1) {
       if (Array.isArray(keys)) {
         keys.forEach(key => {
           if (helpers.isOfPrimitiveType(['string'], key)) {
             if (!this.body.$projection) {
-              this.body['$projection'] = {};
+              this.body.$projection = {};
             }
 
             this.body.$projection[key] = include;

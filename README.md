@@ -36,6 +36,12 @@ mongoQuery.addToQuery(['field1', 'field11'], value);
 ```
 If the key already exists, only its value will be changed. The value can be primitive, object with containing the reserved supported operators. The location of the key inside the query is determined by the provided array with the value at the beginning denoting the root location and the value at the end denoting the exact name of the key. If any portion of the path does not exist in the current body of the query, it is automatically created. It returns the current state of the _mongoQuery_ object.
 
+Create a clause with a key _clause_field_ with a value _clause_value_
+```javascript
+mongoQuery.clause('clause_field', 'clause_value')
+```
+It returns an object with one key and its value.
+
 Remove the key _field1_ with its associated value if any
 ```javascript
 mongoQuery.removeFromQuery(['field1']);
@@ -52,13 +58,13 @@ Full support for the current mongodb query [comparison operators](https://docs.m
 
 Equal to a specified _value_
 ```javascript
-mongoQB.$eq(value)
+mongoQuery.$eq(value)
 ```
 It returns the object containing only the $eq operator as key and its value provided by the argument.
 
 Inclusion in the specified _array_
 ```javascript
-mongoQB.$in(array)
+mongoQuery.$in(array)
 ```
 It returns the object containing only the **$in** operator as key and its value as array provided by the argument.
 
@@ -70,37 +76,9 @@ Partial support for the current mongodb query [element operators](https://docs.m
 
 Existing of a specified field by _value_
 ```javascript
-mongoQB.$exists(value)
+mongoQuery.$exists(value)
 ```
 It returns the object containing only the **$exists** operator as key and its value provided by the argument. The default value is true.
-
-#### Evaluation operators
-
-Partial support for the current mongodb query [evaluation operators](https://docs.mongodb.com/manual/reference/operator/query-evaluation/).
-
-Add a text search by a specified _value_
-```javascript
-mongoQB.$search(value)
-```
-It returns the object containing only the **$text** operator and its value - the **$search** operator as key and its value provided by the argument. If the **$text** key does not exist in the query, it is added automatically.
-
-Remove the current text search
-```javascript
-mongoQB.$searchRemove()
-```
-If the **$search** key is the last remaining in the **$text** operator, the **$text** key will be removed automatically. It returns the current state of the _mongoQuery_ object.
-
-Adds a text language by a specified _value_ (the default _value_ is "none")
-```javascript
-mongoQB.$language(value)
-```
-It returns the object containing only the **$text** operator and its value with the **$language** operator as key and its value provided by the argument. If the **$text** key does not exist in the query, it is added automatically.
-
-Remove the current text language
-```javascript
-mongoQB.$languageRemove()
-```
-If the **$language** key is the last remaining in the **$text** operator, the **$text** key will be removed automatically. It returns the current state of the _mongoQuery_ object.
 
 #### Date operators
 
@@ -108,9 +86,59 @@ Partial support fo the current mongodb query date operators.
 
 Adds a date match by a specified _value_
 ```javascript
-mongoQB.$date(value)
+mongoQuery.$date(value)
 ```
 It returns the object containing only the **$date** operator as key and its value provided by the argument. the provided argument must be of string type.
+
+#### Evaluation operators
+
+Partial support for the current mongodb query [evaluation operators](https://docs.mongodb.com/manual/reference/operator/query-evaluation/).
+
+Add a text search by a specified _value_
+```javascript
+mongoQuery.$search(value)
+```
+It returns the object containing only the **$text** operator and its value - the **$search** operator as key and its value provided by the argument. If the **$text** key does not exist in the query, it is added automatically.
+
+Remove the current text search
+```javascript
+mongoQuery.$searchRemove()
+```
+If the **$search** key is the last remaining in the **$text** operator, the **$text** key will be removed automatically. It returns the current state of the _mongoQuery_ object.
+
+Adds a text language by a specified _value_ (the default _value_ is "none")
+```javascript
+mongoQuery.$language(value)
+```
+It returns the object containing only the **$text** operator and its value with the **$language** operator as key and its value provided by the argument. If the **$text** key does not exist in the query, it is added automatically.
+
+Remove the current text language
+```javascript
+mongoQuery.$languageRemove()
+```
+If the **$language** key is the last remaining in the **$text** operator, the **$text** key will be removed automatically. It returns the current state of the _mongoQuery_ object.
+
+#### Logical operators
+
+Partial support for the current mongodb query [logical operators](https://docs.mongodb.com/manual/reference/operator/query-logical/).
+
+Add an **$or** operator on a location _keyPath_ as an array of fields, on _clause1_ and _clause2_
+```javascript
+mongoQuery.$or(keyPath, [clause1, clause2])
+```
+It returns the current state of the _mongoQuery_ object containing the **$or** operator under the keyPath.
+
+Remove a clause from the **$or** operator under the location _keyPath_
+```javascript
+mongoQuery.$orRemoveFrom(keyPath, 'clause_field1')
+```
+If the clause with the key _'clause_field1'_ is the last remaining in the **$or** operator, the **$or** operator will be removed automatically from the query. It returns the current state of the _mongoQuery_ object.
+
+Remove the **$or** operator under the location _keyPath_
+```javascript
+mongoQuery.$orClear(keyPath)
+```
+If not specified, the default value of the _keyPath_ is an empty array. It returns the current state of the _mongoQuery_ object.
 
 ## Sorting
 

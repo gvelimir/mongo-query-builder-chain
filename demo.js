@@ -15,6 +15,7 @@ mongoQB = new mongoQBModule.MongoQuery({
     field4: -1
   }
 });
+console.log(mongoQB.body);
 
 console.log(mongoQB.addToQuery(['field1'], mongoQB.$ne("-1"))
   .addToQuery(['field2'], mongoQB.$exists())
@@ -23,6 +24,9 @@ console.log(mongoQB.addToQuery(['field1'], mongoQB.$ne("-1"))
   .projectionAdd(['projection_field2', 'projection_field3', 'projection_field4'])
   .projectionAdd(['projection_field1', 'projection_field5'], 0)
   .projectionRemove('projection_field2')
+  .$or([], [mongoQB.clause('clause_field1', 'clause_value1'), mongoQB.clause('clause_field2', 'clause_value2')])
+  .$orRemoveFrom([], 'clause_field1')
+  .$orClear()
   .sort("field0", 1)
   .sort("field1.field11.field111", 1)
   .sort("field2.field21", 1)
