@@ -202,7 +202,7 @@ class MongoQuery {
 
   // Comparison query operators
 
-  $eq(value) {
+  static $eq(value) {
     if (helpers.isOfPrimitiveType(['number', 'string'], value)) {
       return {
         $eq: value
@@ -212,19 +212,19 @@ class MongoQuery {
     }
   }
 
-  $gt(value) {
+  static $gt(value) {
     return {
       $gt: value
     };
   }
 
-  $gte(value) {
+  static $gte(value) {
     return {
       $gte: value
     };
   }
 
-  $in(value) {
+  static $in(value) {
     if (Array.isArray(value)) {
       return {
         $in: value
@@ -234,7 +234,7 @@ class MongoQuery {
     }
   }
 
-  $ne(value) {
+  static $ne(value) {
     if (helpers.isOfPrimitiveType(['number', 'string'], value)) {
       return {
         $ne: value
@@ -244,7 +244,7 @@ class MongoQuery {
     }
   }
 
-  $nin(value) {
+  static $nin(value) {
     if (Array.isArray(value)) {
       return {
         $nin: value
@@ -254,13 +254,13 @@ class MongoQuery {
     }
   }
 
-  $lt(value) {
+  static $lt(value) {
     return {
       $lt: value
     };
   }
 
-  $lte(value) {
+  static $lte(value) {
     return {
       $lte: value
     };
@@ -268,7 +268,7 @@ class MongoQuery {
 
   // Element query operators
 
-  $exists(value = true) {
+  static $exists(value = true) {
     if (helpers.isOfPrimitiveType(['boolean'], value)) {
       return {
         $exists: value
@@ -280,7 +280,7 @@ class MongoQuery {
 
   // Evaluation query operators
 
-  $language(value = 'none') {
+  static $language(value = 'none') {
     if (!helpers.isOfPrimitiveType(['string'], value)) {
       throw "Argument value must be string!";
     }
@@ -316,7 +316,7 @@ class MongoQuery {
     return this;
   }
 
-  $search(value) {
+  static $search(value) {
     if (!helpers.isOfPrimitiveType(['string'], value)) {
       throw "Argument value must be string!";
     }
@@ -353,7 +353,7 @@ class MongoQuery {
   }
 
   // Date query operators
-  $date(value) {
+  static $date(value) {
     if (helpers.isOfPrimitiveType(['string'], value)) {
       return {
         $date: value
