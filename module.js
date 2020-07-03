@@ -121,7 +121,12 @@ class MongoQuery {
           if (index < keyPath.length - 1) {
             parent = parent[key];
           } else {
-            if (!merge) {
+            if (merge) {
+              if (!helpers.isOfPrimitiveType(['object'], value)) {
+                throw "Argument value must be object!";
+              }
+              parent[key] = Object.assign(parent[key], value);
+            } else {
               parent[key] = value;
             }
           }
@@ -129,12 +134,6 @@ class MongoQuery {
           throw "Argument keyPath contains a non string element!";
         }
       });
-      if (merge) {
-        if (!helpers.isOfPrimitiveType(['object'], value)) {
-          throw "Argument value must be object!";
-        }
-        parent = Object.assign(parent, value);
-      }
       return this;
     } else {
       throw "Argument keyPath must be an array!";
@@ -354,13 +353,9 @@ class MongoQuery {
 
   // Date query operators
   static $date(value) {
-    if (helpers.isOfPrimitiveType(['string'], value)) {
-      return {
-        $date: value
-      };
-    } else {
-      throw "Argument value must be string!";
-    }
+    return {
+      $date: value
+    };
   }
 
   // Logical query operators
@@ -467,11 +462,11 @@ class MongoQuery {
       if (Array.isArray(keys)) {
         keys.forEach(key => {
           if (helpers.isOfPrimitiveType(['string'], key)) {
-            if (!this.body.$projection) {
-              this.body.$projection = {};
+            if (!this.body.projection) {
+              this.body.projection = {};
             }
 
-            this.body.$projection[key] = include;
+            this.body.projection[key] = include;
           } else {
             throw "Argument keys contains a non string element!";
           }
@@ -486,12 +481,12 @@ class MongoQuery {
   }
 
   projectionRemove(key) {
-    let projectionKeys = Object.keys(this.body.$projection);
+    let projectionKeys = Object.keys(this.body.projection);
     if (projectionKeys.includes(key)) {
-      delete this.body.$projection[key];
+      delete this.body.projection[key];
 
       if (!projectionKeys.length) {
-        delete this.body.$projection;
+        delete this.body.projection;
       }
 
       return this;
