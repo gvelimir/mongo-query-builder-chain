@@ -30,8 +30,8 @@ console.log(util.inspect(mongoQB.addToQuery(['field1'], mongoQBModule.MongoQuery
   .$or([], [mongoQB.clause('clause_field1', 'clause_value1'), mongoQBModule.MongoQuery.$language(), mongoQBModule.MongoQuery.$search('search_value')])
   .$orRemoveFrom([], 'clause_field1')
   .$orClear()
-  .sort("field0", 1)
-  .sort("field1.field11.field111", 1)
-  .sort("field2.field21", 1)
+  .sort("field0")
+  .sort("field1.field11.field111")
+  .sort("field2.field21")
   .sort("field4", -1)
   .getValue(), false, null, true));

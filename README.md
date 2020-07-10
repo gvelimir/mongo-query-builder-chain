@@ -142,9 +142,9 @@ If not specified, the default value of the _keyPath_ is an empty array. It retur
 
 ## Sorting
 
-Add a sort criteria with key _field1.field11_ that will alter the current sorting by ascending
+Add a sort criteria with key _field1.field11_ that will alter the current sorting by descending (the default value for the sorting direction is ascending i.e. 1, and does not have to be provided)
 ```javascript
-mongoQuery.sort("field1.field11", 1);
+mongoQuery.sort("field1.field11", -1);
 ```
 Any previous sorting is maintained and the sort key is added at the end of the sort part of the body. It returns the current state of the _mongoQuery_ object. It returns the current state of the mongoQuery object. 
 

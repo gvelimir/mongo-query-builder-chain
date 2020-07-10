@@ -180,7 +180,7 @@ class MongoQuery {
     }
   }
 
-  sort(key, direction) {
+  sort(key, direction = 1) {
     if (!helpers.isOfPrimitiveType(['string'], key)) {
       throw "Argument key must be string!";
     } else if (!helpers.isSortDirection(direction)) {
