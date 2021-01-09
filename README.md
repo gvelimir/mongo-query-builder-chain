@@ -36,6 +36,11 @@ mongoQuery.addToQuery(['field1', 'field11'], value, merge);
 ```
 If the key already exists, only its value will be changed. The value can be primitive, object with containing the reserved supported operators. The location of the key inside the query is determined by the provided array with the value at the beginning denoting the root location and the value at the end denoting the exact name of the key. If any portion of the path does not exist in the current body of the query, it is automatically created. It returns the current state of the _mongoQuery_ object.
 
+Checks whether the key _field11_ under _field1_ exists in the query. It returns true or false.
+```javascript
+mongoQuery.hasKey(['field1', 'field11']);
+```
+
 Create a clause with a key _clause_field_ with a value _clause_value_
 ```javascript
 mongoQuery.clause('clause_field', 'clause_value')

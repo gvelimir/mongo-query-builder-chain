@@ -93,6 +93,21 @@ class MongoQuery {
     this.keyTypePairs = Array.from(new Set(keyTypePairs.concat(this.keyTypePairs)));
   }
 
+  hasKey(keyPath = []) {
+    if (Array.isArray(keyPath)) {
+      let value = this.body.query;
+      keyPath.forEach(key => {
+        if (!value) {
+          return false;
+        }
+        value = value[key];
+      });
+      return !!value;
+    } else {
+      throw "Argument keyPath must be an array!";
+    }
+  }
+
   getValue(keyPath = []) {
     if (Array.isArray(keyPath)) {
       let value = this.body;

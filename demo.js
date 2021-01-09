@@ -23,6 +23,8 @@ console.log(util.inspect(mongoQB.addToQuery(['field1'], mongoQBModule.MongoQuery
   .addToQuery(['field3'], 0)
   .addToQuery(['field4'], mongoQBModule.MongoQuery.$gte(mongoQBModule.MongoQuery.$date(1583794800000)))
   .addToQuery(['field4'], mongoQBModule.MongoQuery.$lte(mongoQBModule.MongoQuery.$date(1593727200000)), true)
+  .removeFromQuery(['field3'])
+  .addToQuery(['field5'], 1)
   .addToQuery([], mongoQBModule.MongoQuery.$language(), true)
   .projectionAdd(['projection_field2', 'projection_field3', 'projection_field4'])
   .projectionAdd(['projection_field1', 'projection_field5'], 0)
@@ -35,3 +37,7 @@ console.log(util.inspect(mongoQB.addToQuery(['field1'], mongoQBModule.MongoQuery
   .sort("field2.field21")
   .sort("field4", -1)
   .getValue(), false, null, true));
+
+console.log(mongoQB.hasKey(['field2']));
+console.log(mongoQB.hasKey(['field3']));
+console.log(mongoQB.hasKey(['field1', '$ne']));
